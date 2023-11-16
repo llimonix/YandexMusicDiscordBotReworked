@@ -16,8 +16,6 @@ class VoiceManager:
 
     async def shuffle_tracks(self):
         """Перемешивает порядок плейлистов и треков в каждом плейлисте"""
-        random.shuffle(self.queue)
-
         for i, playlist in enumerate(self.queue):
             if isinstance(playlist, Playlist):
                 if i == 0:

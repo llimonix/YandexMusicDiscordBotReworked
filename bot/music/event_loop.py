@@ -95,7 +95,10 @@ async def now_playing(voiceManager: VoiceManager, track: Track, MediaPlayer):
         embed.description = f"[{track.title} ({track.duration})]({track.track_link})"
         artists = [artist.name for artist in track.artists]
         if artists:
-            artist_cover_uri = ("https://" + track.artists[0].cover.uri).replace("%%", "300x300")
+            try:
+                artist_cover_uri = ("https://" + track.artists[0].cover.uri).replace("%%", "300x300")
+            except:
+                artist_cover_uri = "https://yastatic.net/s3/doc-binary/freeze/vwogjhEVmMn1pRZIEL6YBYfOSQs.png"
             artist_uri = f"https://music.yandex.ru/artist/{track.artists[0].id}"
 
             embed.set_author(name=', '.join(artists), icon_url=artist_cover_uri, url=artist_uri)

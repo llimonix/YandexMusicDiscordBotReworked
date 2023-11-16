@@ -37,7 +37,7 @@
 ```
 в Windows:
 Вам необходимо скачать ffmpeg [здесь](https://ffmpeg.org/).
-И в bot.music.event_loop.py на [этой строке](bot/music/event_loop.py#L72) указать путь до вашего ffmpeg:
+И в bot.music.event_loop.py на [этой строке](bot/music/event_loop.py#L79) указать путь до вашего ffmpeg:
 ```python
 voiceManager.voiceClient.play(FFmpegOpusAudio(normalized_audio.export(format='wav'), pipe=True, executable="ffmpeg.exe"))
 ```

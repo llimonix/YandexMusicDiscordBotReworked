@@ -2,6 +2,7 @@ from discord import ui, ButtonStyle, Interaction, Embed, Colour
 from ...music import GM
 from ...music.voice import VoiceManager
 from ...music.YM.Track import Track
+from ...music.YM.Playlist import Playlist
 
 
 def check_voice(func):
@@ -54,7 +55,7 @@ class MediaPlayer(ui.View):
         super().__init__(timeout=None)
         self.repeat_enabled = False
 
-    @ui.button(label="Пауза", style=ButtonStyle.green, custom_id="play_or_pause", row=1)
+    @ui.button(label="Пауза", style=ButtonStyle.green, custom_id="play_or_pause", row=1, emoji="<:Pause:1172248080129732749>")
     @check_voice
     @check_role(770230393575702558)
     async def play_or_pause(self, interaction: Interaction, button: ui.Button):
@@ -69,14 +70,16 @@ class MediaPlayer(ui.View):
                 VM.voiceClient.pause()
                 button.label = "Продолжить"
                 button.style = ButtonStyle.red
+                button.emoji = "<:Play:1172248082197528658>"
             else:
                 VM.voiceClient.resume()
                 button.label = "Пауза"
                 button.style = ButtonStyle.green
+                button.emoji = "<:Pause:1172248080129732749>"
             await interaction.response.edit_message(view=self)
 
 
-    @ui.button(label="Пропустить", style=ButtonStyle.blurple, custom_id="skip_track", row=3)
+    @ui.button(label="Пропустить", style=ButtonStyle.blurple, custom_id="skip_track", row=3, emoji="<:Skip:1172248088451235870> ")
     @check_voice
     @check_role(770230393575702558)
     async def skip_track(self, interaction: Interaction, button: ui.Button):
@@ -94,7 +97,7 @@ class MediaPlayer(ui.View):
             await interaction.response.edit_message(view=self)
 
 
-    @ui.button(label="Пропустить плейлист", style=ButtonStyle.blurple, custom_id="skip_playlist", row=3)
+    @ui.button(label="Пропустить плейлист", style=ButtonStyle.blurple, custom_id="skip_playlist", row=3, emoji="<:forward:1172248078674317394>")
     @check_voice
     @check_role(770230393575702558)
     async def skip_playlist(self, interaction: Interaction, button: ui.Button):
@@ -113,7 +116,7 @@ class MediaPlayer(ui.View):
             await interaction.response.edit_message(view=self)
 
 
-    @ui.button(label="Остановить", style=ButtonStyle.red, custom_id="stop", row=1)
+    @ui.button(label="Остановить", style=ButtonStyle.red, custom_id="stop", row=1, emoji="<:Stop:1172248091336904755>")
     @check_voice
     @check_role(770230393575702558)
     async def stop(self, interaction: Interaction, button:ui.Button):
@@ -128,7 +131,7 @@ class MediaPlayer(ui.View):
             VM.voiceClient.stop()
 
 
-    @ui.button(label="Повтор трека", style=ButtonStyle.grey, custom_id="repeat_track", row=2)
+    @ui.button(label="Повтор трека", style=ButtonStyle.grey, custom_id="repeat_track", row=2, emoji="<:Replay:1172248084114325514>")
     @check_voice
     @check_role(770230393575702558)
     async def repeat_track(self, interaction: Interaction, button: ui.Button):
@@ -142,12 +145,15 @@ class MediaPlayer(ui.View):
             if self.repeat_enabled:  # Проверяем, включено ли повторение
                 self.repeat_enabled = False  # Отключаем повторение
                 button.style = ButtonStyle.grey
+                button.emoji = "<:Replay:1172248084114325514>"
             else:
                 self.repeat_enabled = True  # Включаем повторение
                 button.style = ButtonStyle.green
+                button.emoji = "<:Replay:1172248084114325514>"
             await interaction.response.edit_message(view=self)
 
-    @ui.button(label="Перемешать", style=ButtonStyle.grey, custom_id="shuffle_tracks", row=2)
+    @ui.button(label="Перемешать", style=ButtonStyle.grey, custom_id="shuffle_tracks", row=2,
+               emoji="<:shuffle:1172612523808276571>")
     @check_voice
     @check_role(770230393575702558)
     async def shuffle_tracks(self, interaction: Interaction, button:ui.Button):
@@ -170,27 +176,64 @@ class MediaPlayer(ui.View):
                 embed=embed,
                 ephemeral=True
             )
+    @ui.button(label="Похожие треки", style=ButtonStyle.grey, custom_id="similars_tracks", row=2,
+               emoji="<:similartrack:1178232889213726771>")
+    @check_voice
+    @check_role(770230393575702558)
+    async def similars_tracks(self, interaction: Interaction, button:ui.Button):
+        VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
+        if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
+             await interaction.response.send_message(
+                "Для этого действия вам нужно находится в текущем голосом канале!",
+                ephemeral=True
+            )
+        else:
+            first_track = (await VM.first_track()).track_object
+            track_exists = await Playlist(user_id=f"{first_track.id}", playlist_id=f"{first_track.albums[0]['id']}").find_similar_tracks()
 
-    @ui.button(label="Помощь", style=ButtonStyle.grey, custom_id="help", row=4)
+            if track_exists is not None:
+                VM.queue.append(track_exists)
+
+                embed = Embed(
+                    title="Похожие треки",
+                    colour=Colour.green()
+                )
+
+                embed.description = "Похожие треки были добавлены в очередь!"
+
+            else:
+                embed = Embed(
+                    title="Похожие треки",
+                    colour=Colour.red()
+                )
+
+                embed.description = "Не найдено похожих треков!"
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+    @ui.button(label="Помощь", style=ButtonStyle.grey, custom_id="help", row=4, emoji="<:help:1172248485429510154>")
     async def help(self, interaction: Interaction, button: ui.Button):
         embed = Embed(
             title="Подсказка",
             colour=Colour.green()
         )
 
-        embed.description = "Данный бот проигрывает Треки/Альбомы/Плейлисты/Подкасты/Книги" \
+        embed.description = "<:yandexm:1172239147969302559> Данный бот проигрывает Треки/Альбомы/Плейлисты/Подкасты/Книги" \
                             " из Яндекс.Музыки!\n\n" \
                             "Вы можете добавить трек отправив ссылку/название трека или отрывок из песни с помощью команды: </play:1171295728300212344>\n\n" \
 
         embed.add_field(
             name="Подсказки по кнопкам",
-            value="Пауза \ Продолжить - Паузка или продолжение проигрывания.\n" \
-                  "Пропустить - Пропустить один Трек\Подкаст\Книгу в очереди.\n" \
-                  "Пропустить плейлист - Пропустить целый плейлист в очереди.\n" \
-                  "Повтор трека - Повторять Трек\Подкаст\Книгу в очереди.\n" \
-                  "Перемешать - Перемешать все треки во всех плейлистах.\n" \
-                  "Остановить - Полностью остановить проигрывание и очистить очередь!\n" \
-                  "Треки в очереди- Очередь треков."
+            value="<:Pause:1172248080129732749> \ <:Play:1172248082197528658> - Паузка или продолжение проигрывания.\n" \
+                  "<:Skip:1172248088451235870> - Пропустить один Трек\Подкаст\Книгу в очереди.\n" \
+                  "<:forward:1172248078674317394> - Пропустить целый плейлист в очереди.\n" \
+                  "<:Replay:1172248084114325514> - Повторять Трек\Подкаст\Книгу в очереди.\n" \
+                  "<:shuffle:1172612523808276571> - Перемешать все треки во всех плейлистах.\n" \
+                  "<:Stop:1172248091336904755> - Полностью остановить проигрывание и очистить очередь!\n" \
+                  "<:Tracklist:1172248092913967285> - Очередь треков."
         )
         await interaction.response.send_message(
             embed=embed,
@@ -198,7 +241,7 @@ class MediaPlayer(ui.View):
         )
 
 
-    @ui.button(label="Треки в очереди", style=ButtonStyle.grey, custom_id="queue", row=4)
+    @ui.button(label="Треки в очереди", style=ButtonStyle.grey, custom_id="queue", row=4, emoji="<:Tracklist:1172248092913967285>")
     @check_voice
     async def queue(self, interaction: Interaction, button: ui.Button):
         embed = Embed(
@@ -229,11 +272,16 @@ class MediaPlayer(ui.View):
                     else:
                         mediaItemQueue.append(f"{index+1}. _{item.title}_")
 
-                embed.add_field(
-                    name = mediaItem.title,
-                    value=('\n'.join(mediaItemQueue)) + f"\n\n И ещё {len(mediaItem.tracks) - 8} треков!"
-                )
-
+                if len(mediaItem.tracks) < 8:
+                    embed.add_field(
+                        name=mediaItem.title,
+                        value=('\n'.join(mediaItemQueue))
+                    )
+                else:
+                    embed.add_field(
+                        name=mediaItem.title,
+                        value=('\n'.join(mediaItemQueue)) + f"\n\n И ещё {len(mediaItem.tracks) - 8} треков!"
+                    )
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 

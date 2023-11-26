@@ -26,7 +26,6 @@ class VoiceManager:
                 else:
                     random.shuffle(playlist.tracks)
 
-
     async def connect(self):
         """Подключение к голосовому чату"""
         self.voiceClient = await self.voiceChannel.connect()

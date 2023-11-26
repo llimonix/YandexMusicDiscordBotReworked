@@ -110,9 +110,11 @@ async def now_playing(voiceManager: VoiceManager, track: Track, MediaPlayer):
             if isinstance(child, Button) and child.custom_id == "repeat_track":
                 if MediaPlayer.repeat_enabled == False:
                     child.style = ButtonStyle.grey
+                    child.emoji = "<:Replay:1172248084114325514>"
             if isinstance(child, Button) and child.custom_id == "play_or_pause":
                 child.style = ButtonStyle.green
                 child.label = "Пауза"
+                child.emoji = "<:Pause:1172248080129732749>"
         try:
             await voiceManager.message.edit(embed=embed, view=MediaPlayer)
         except:
@@ -143,9 +145,11 @@ async def now_playing(voiceManager: VoiceManager, track: Track, MediaPlayer):
             if isinstance(child, Button) and child.custom_id == "repeat_track":
                 if MediaPlayer.repeat_enabled == False:
                     child.style = ButtonStyle.grey
+                    child.emoji = "<:Replay:1172248084114325514>"
             if isinstance(child, Button) and child.custom_id == "play_or_pause":
                 child.style = ButtonStyle.green
                 child.label = "Пауза"
+                child.emoji = "<:Pause:1172248080129732749>"
 
         voiceManager.message = await voiceManager.textChannel.send(embed=embed, view=MediaPlayer)
 
@@ -166,10 +170,12 @@ async def disconnected_message(channel: TextChannel, activity=False, notTracks=F
         embed.color=Colour.brand_red()
     else:
         embed.color=Colour.red()
-
-    message = await channel.send(embed=embed)
-    await asyncio.sleep(10 if activity else 3)
-    await message.delete()
+    try:
+        message = await channel.send(embed=embed)
+        await asyncio.sleep(10 if activity else 3)
+        await message.delete()
+    except:
+        ...
 
 
 async def error_message(channel: TextChannel, disconnectError = False, unexpected=False):

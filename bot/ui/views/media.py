@@ -57,7 +57,6 @@ class MediaPlayer(ui.View):
 
     @ui.button(label="Пауза", style=ButtonStyle.green, custom_id="play_or_pause", row=1, emoji="<:Pause:1172248080129732749>")
     @check_voice
-    @check_role(770230393575702558)
     async def play_or_pause(self, interaction: Interaction, button: ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -81,7 +80,6 @@ class MediaPlayer(ui.View):
 
     @ui.button(label="Пропустить", style=ButtonStyle.blurple, custom_id="skip_track", row=3, emoji="<:Skip:1172248088451235870> ")
     @check_voice
-    @check_role(770230393575702558)
     async def skip_track(self, interaction: Interaction, button: ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -99,7 +97,6 @@ class MediaPlayer(ui.View):
 
     @ui.button(label="Пропустить плейлист", style=ButtonStyle.blurple, custom_id="skip_playlist", row=3, emoji="<:forward:1172248078674317394>")
     @check_voice
-    @check_role(770230393575702558)
     async def skip_playlist(self, interaction: Interaction, button: ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -118,7 +115,6 @@ class MediaPlayer(ui.View):
 
     @ui.button(label="Остановить", style=ButtonStyle.red, custom_id="stop", row=1, emoji="<:Stop:1172248091336904755>")
     @check_voice
-    @check_role(770230393575702558)
     async def stop(self, interaction: Interaction, button:ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -133,7 +129,6 @@ class MediaPlayer(ui.View):
 
     @ui.button(label="Повтор трека", style=ButtonStyle.grey, custom_id="repeat_track", row=2, emoji="<:Replay:1172248084114325514>")
     @check_voice
-    @check_role(770230393575702558)
     async def repeat_track(self, interaction: Interaction, button: ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -155,7 +150,6 @@ class MediaPlayer(ui.View):
     @ui.button(label="Перемешать", style=ButtonStyle.grey, custom_id="shuffle_tracks", row=2,
                emoji="<:shuffle:1172612523808276571>")
     @check_voice
-    @check_role(770230393575702558)
     async def shuffle_tracks(self, interaction: Interaction, button:ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:
@@ -179,7 +173,6 @@ class MediaPlayer(ui.View):
     @ui.button(label="Похожие треки", style=ButtonStyle.grey, custom_id="similars_tracks", row=2,
                emoji="<:similartrack:1178232889213726771>")
     @check_voice
-    @check_role(770230393575702558)
     async def similars_tracks(self, interaction: Interaction, button:ui.Button):
         VM: VoiceManager = await GM.get_guild(interaction.user.voice.channel, interaction.channel)
         if not interaction.user.voice.channel or interaction.user.voice.channel.id != VM.voiceChannel.id:

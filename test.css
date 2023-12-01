@@ -1,0 +1,12 @@
+.online:after{background-color:#8c72da}
+.botPageImg{border-radius:50%;padding:3px;border:#8c72da 3px solid}
+.botUpBtn{border-radius:5px;background:none;border:2px #8c72da solid}
+.comment.posted{border:2px solid #1E1E1E;background:#1E1E1E;border-radius:10px}
+.comment.textarea{background: #1E1E1E}
+.botPage{background:#1e202566}
+body{background:#151515}
+#topLine,footer{background:#202025}
+.container-fluid,#name1337{background:#212121}
+.botPageInvite{background-color:black}
+@keyframes btnanim{0%{box-shadow:0 3px 30px #8c72da9c;transform:scale(1)}100%{box-shadow:0 3px 30px #8c72da;transform: scale(1.05)}}
+.botPageInvite {box-shadow:0 3px 30px #8c72da;font-size:18px;background:linear-gradient(90deg, #8c72da 0%, #8c72da 100%);animation:btnanim 2s infinite alternate;animation-timing-function:ease-in-out}
